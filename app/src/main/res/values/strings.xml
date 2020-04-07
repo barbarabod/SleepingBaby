@@ -1,3 +1,13 @@
 <resources>
     <string name="app_name">SleepingBaby</string>
+    <string name="start_button">Start</string>
+    <string name="settings">Settings</string>
+    <string name="exit">Exit</string>
+    <string name="time_child">Change time spent with child</string>
+    <string name="restart_progress">Restart progress</string>
+    <string name="set_day">Set day</string>
+    <string name="sleepingBaby">SleepingBaby</string>
+    <string name="pause">Pause</string>
+    <string name="active_text">Your baby is crying! \n Go to him in:</string>
+    <string name="timer">0:00</string>
 </resources>
