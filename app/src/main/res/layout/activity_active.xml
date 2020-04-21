@@ -4,21 +4,22 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/background"
-    tools:context=".Active">
+    tools:context=".activities.Active">
 
     <TextView
         android:id="@+id/text_information"
-        android:layout_width="wrap_content"
+        android:layout_width="350dp"
         android:layout_height="wrap_content"
         android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
-        android:layout_marginStart="79dp"
+        android:layout_marginStart="29dp"
         android:layout_marginTop="145dp"
         android:layout_marginBottom="129dp"
         android:text="@string/information"
         android:textColor="@android:color/white"
-        android:textSize="14sp" />
+        android:textSize="14sp"
+        android:gravity="center"/>
 
     <TextView
         android:id="@+id/text_view_countdown"

@@ -1,9 +1,11 @@
-package com.sleepingbaby;
+package com.sleepingbaby.activities;
 
 import android.os.Bundle;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.preference.PreferenceFragmentCompat;
+
+import com.sleepingbaby.R;
 
 public class SettingsActivity extends AppCompatActivity {
 
