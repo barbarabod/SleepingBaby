@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/background"
-    tools:context=".activities.Active">
+    tools:context=".activitie.Active">
 
     <TextView
         android:id="@+id/text_information"
@@ -39,7 +39,7 @@
         android:layout_below="@+id/text_view_countdown"
         android:layout_centerHorizontal="true"
         android:text="@string/start"
-        android:onClick="onStart"/>
+        android:onClick="onStartButton"/>
 
     <Button
         android:id="@+id/button_reset"

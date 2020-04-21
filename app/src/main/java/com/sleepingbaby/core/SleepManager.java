@@ -10,8 +10,8 @@ import java.time.LocalTime;
 
 public class SleepManager
 {
-    private static int[][] periods = {{3100, 5100, 7100}, {4100, 5100, 6100}, {4000, 7000, 10000}};
-
+    private static int[][] periods = {{10200, 12200, 15200}, {4200, 5200, 6200}, {4200, 7200, 12000}};
+    private static long timeWitChild = 10200;
 
 
     public static void reset()
@@ -101,5 +101,10 @@ public class SleepManager
             if(day < periods.length) return periods[day + 1][0];
             else return periods[periods.length -1][0];
         }
+    }
+
+    public static long getTimeWitChild()
+    {
+        return timeWitChild;
     }
 }

@@ -3,6 +3,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="com.sleepingbaby">
 
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+
     <application
         android:name=".App"
         android:allowBackup="true"
@@ -13,28 +15,28 @@
         android:theme="@style/AppTheme"
         tools:ignore="LockedOrientationActivity">
         <activity
-            android:name=".activities.Active"
-            android:parentActivityName=".activities.MainActivity">
+            android:name=".activitie.Active"
+            android:parentActivityName=".activitie.MainActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".activities.MainActivity" />
+                android:value=".activitie.MainActivity" />
         </activity>
         <activity
-            android:name=".activities.SettingsActivity"
-            android:parentActivityName=".activities.MainActivity">
+            android:name=".activitie.SettingsActivity"
+            android:parentActivityName=".activitie.MainActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".activities.MainActivity" />
+                android:value=".activitie.MainActivity" />
         </activity>
         <activity
-            android:name=".activities.MainActivity"
+            android:name=".activitie.MainActivity"
             android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
+        <service android:name=".core.MainService" />
         <meta-data
             android:name="preloaded_fonts"
             android:resource="@array/preloaded_fonts" />

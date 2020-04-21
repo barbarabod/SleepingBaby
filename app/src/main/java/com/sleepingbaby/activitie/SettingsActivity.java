@@ -1,4 +1,4 @@
-package com.sleepingbaby.activities;
+package com.sleepingbaby.activitie;
 
 import android.os.Bundle;
 
