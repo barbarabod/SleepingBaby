@@ -1,0 +1,31 @@
+<PreferenceScreen xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <EditTextPreference
+        app:key="day"
+        app:title="@string/day_title"
+        app:useSimpleSummaryProvider="true" />
+
+    <ListPreference
+        app:defaultValue="1"
+        app:entries="@array/time_entries"
+        app:entryValues="@array/time_values"
+        app:key="time"
+        app:title="@string/time_title"
+        app:useSimpleSummaryProvider="true" />
+
+    <SwitchPreference
+        app:defaultValue="false"
+        app:key="listening"
+        app:title="@string/listening_title"
+        app:useSimpleSummaryProvider="true"
+        />
+
+    <ListPreference
+        app:defaultValue="Nie zmienione"
+        app:entries="@array/reset_entries"
+        app:entryValues="@array/reset_values"
+        app:key="reset"
+        app:title="@string/reset_title"
+        app:useSimpleSummaryProvider="true" />
+
+</PreferenceScreen>

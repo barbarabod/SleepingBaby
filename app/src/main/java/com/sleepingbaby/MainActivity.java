@@ -24,7 +24,13 @@ public class MainActivity extends AppCompatActivity
 
     public void goSettings(View view)
     {
-        Intent intent = new Intent(this, Settings.class);
+        Intent intent = new Intent(this, SettingsActivity.class);
         startActivity(intent);
+    }
+
+    public void goExit(View view)
+    {
+        finish();
+        System.exit(0);
     }
 }

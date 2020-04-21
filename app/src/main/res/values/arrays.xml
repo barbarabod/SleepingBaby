@@ -1,0 +1,24 @@
+<resources>
+    <!-- Reply Preference -->
+    <string-array name="time_entries">
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+    </string-array>
+
+    <string-array name="time_values">
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+    </string-array>
+
+    <string-array name="reset_entries">
+        <item>Do not reset</item>
+        <item>Reset all data</item>
+    </string-array>
+
+    <string-array name="reset_values">
+        <item>not_reset</item>
+        <item>reset</item>
+    </string-array>
+</resources>

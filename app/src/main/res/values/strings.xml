@@ -10,4 +10,18 @@
     <string name="pause">Pause</string>
     <string name="active_text">Your baby is crying! \n Go to him in:</string>
     <string name="timer">0:00</string>
+    <string name="start_timer">Start</string>
+    <string name="start">Start</string>
+    <string name="reset">Reset</string>
+    <string name="time">00:00</string>
+    <string name="information">Kliknij start gdy dziecko zacznie płakać</string>
+
+    <string name="title_activity_settings">Settings</string>
+
+    <!--  Preferences -->
+    <string name="time_title">Minutes you should spend with your child</string>
+    <string name="day_title">Day of therapy</string>
+    <string name="listening_title">Detection of crying (sound detection)</string>
+    <string name="reset_title">Start therapy again (reset all data)</string>
+
 </resources>
