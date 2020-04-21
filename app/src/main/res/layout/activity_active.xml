@@ -34,7 +34,7 @@
         android:id="@+id/button_start_pause"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:background="@drawable/custom_button_light"
+        android:background="@drawable/round_button"
         android:layout_below="@+id/text_view_countdown"
         android:layout_centerHorizontal="true"
         android:text="@string/start"
