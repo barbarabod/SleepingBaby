@@ -1,8 +1,10 @@
 package com.sleepingbaby.core;
 
 import android.app.Notification;
+import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Binder;
 import android.os.CountDownTimer;
@@ -11,26 +13,36 @@ import android.os.IBinder;
 import androidx.core.app.NotificationCompat;
 
 import com.sleepingbaby.R;
-import com.sleepingbaby.activitie.MainActivity;
+import com.sleepingbaby.activity.Active;
+import com.sleepingbaby.activity.MainActivity;
 
 import static com.sleepingbaby.App.CHANNEL_ID;
+import static com.sleepingbaby.App.TIMER_CHANNEL_ID;
 
 public class MainService extends Service
 {
-    private static String INFORMATION_CRY = "Click when child start crying";
-    private static String INFORMATION_NO_CRY = "Click when child stop crying";
-    private static String INFORMATION_WITH_BABY = "Spend time with child";
-    private static String BUTTON_CRY = "Child\nCry";
-    private static String BUTTON_NO_CRY = "Child\nStopped\nCrying";
+    private static String INFORMATION_CRY;
+    private static String INFORMATION_NO_CRY;
+    private static String INFORMATION_WITH_BABY;
+    private static String BUTTON_CRY;
+    private static String BUTTON_NO_CRY;
 
     private ServiceCallbacks serviceCallbacks;
 
     private final IBinder binder = new LocalBinder();
+
     public void setCallbacks(ServiceCallbacks callbacks)
     {
         serviceCallbacks = callbacks;
     }
-    public class LocalBinder extends Binder { public MainService getService() { return MainService.this; }}
+
+    public class LocalBinder extends Binder
+    {
+        public MainService getService()
+        {
+            return MainService.this;
+        }
+    }
 
     @Override
     public IBinder onBind(Intent intent)
@@ -41,10 +53,17 @@ public class MainService extends Service
     @Override
     public int onStartCommand(Intent intent, int flags, int startId)
     {
+        INFORMATION_CRY = getResources().getString(R.string.information_cry);
+        INFORMATION_NO_CRY = getResources().getString(R.string.information_no_cry);
+        INFORMATION_WITH_BABY = getResources().getString(R.string.information_with_baby);
+        BUTTON_CRY = getResources().getString(R.string.button_cry);
+        BUTTON_NO_CRY = getResources().getString(R.string.button_no_cry);
+
+
         Intent notificationIntent = new Intent(this, MainActivity.class);
         PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, notificationIntent, 0);
         Notification notification = new NotificationCompat.Builder(this, CHANNEL_ID)
-                .setContentTitle("SleepingBaby")
+                .setContentTitle(getResources().getString(R.string.foreground_info))
                 .setSmallIcon(R.drawable.ic_android)
                 .setContentIntent(pendingIntent).build();
 
@@ -92,23 +111,16 @@ public class MainService extends Service
                         serviceCallbacks.updateStartButtonActivity(true);
                         serviceCallbacks.updateStartButtonText(BUTTON_CRY);
                     }
-                    else
-                    {
-                        // TODO
-                    }
+                    pushNotification(false);
                     withBaby = false;
-                }
-                else
+                } else
                 {
                     if(serviceCallbacks != null)
                     {
                         serviceCallbacks.updateInfo(INFORMATION_WITH_BABY);
                         serviceCallbacks.updateStartButtonActivity(false);
                     }
-                    else
-                    {
-                        // TODO
-                    }
+                    pushNotification(true);
                     withBaby = true;
                     waiting = false;
                     SleepManager.updateLastCry();
@@ -137,8 +149,7 @@ public class MainService extends Service
                 serviceCallbacks.updateInfo(INFORMATION_CRY);
                 serviceCallbacks.updateTimerTime(0);
                 stopTimer();
-            }
-            else
+            } else
             {
                 waiting = true;
                 serviceCallbacks.updateStartButtonText(BUTTON_NO_CRY);
@@ -157,14 +168,12 @@ public class MainService extends Service
                 serviceCallbacks.updateInfo(INFORMATION_WITH_BABY);
                 serviceCallbacks.updateStartButtonText(BUTTON_CRY);
                 serviceCallbacks.updateStartButtonActivity(false);
-            }
-            else if(waiting)
+            } else if(waiting)
             {
                 serviceCallbacks.updateInfo(INFORMATION_NO_CRY);
                 serviceCallbacks.updateStartButtonText(BUTTON_NO_CRY);
                 serviceCallbacks.updateStartButtonActivity(true);
-            }
-            else
+            } else
             {
                 serviceCallbacks.updateInfo(INFORMATION_CRY);
                 serviceCallbacks.updateStartButtonText(BUTTON_CRY);
@@ -175,6 +184,28 @@ public class MainService extends Service
     }
 
 
+    public void pushNotification(boolean withChild)
+    {
+        String text;
+        if(withChild)
+            text = getResources().getString(R.string.go_child);
+        else
+            text = getResources().getString(R.string.leave_child);
 
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(this, TIMER_CHANNEL_ID)
+                .setSmallIcon(R.drawable.ic_android)
+                .setContentTitle(text)
+                .setAutoCancel(true);
 
+        PendingIntent intent = PendingIntent.getActivity(this, 0, new Intent(this, Active.class), PendingIntent.FLAG_UPDATE_CURRENT);
+        builder.setContentIntent(intent);
+
+        NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+        notificationManager.notify(13, builder.build());
+    }
+
+    public boolean isWithBaby()
+    {
+        return withBaby;
+    }
 }

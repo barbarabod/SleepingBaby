@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/background"
-    tools:context=".activitie.Active">
+    tools:context=".activity.Active">
 
     <TextView
         android:id="@+id/text_information"
@@ -16,7 +16,7 @@
         android:layout_marginStart="29dp"
         android:layout_marginTop="145dp"
         android:layout_marginBottom="129dp"
-        android:text="@string/information"
+        android:text="@string/information_cry"
         android:textColor="@android:color/white"
         android:textSize="14sp"
         android:gravity="center"/>
@@ -27,7 +27,7 @@
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
         android:layout_centerVertical="true"
-        android:text="@string/time"
+        android:text="0:00"
         android:textColor="@android:color/white"
         android:textSize="60sp" />
 
@@ -38,20 +38,7 @@
         android:background="@drawable/round_button"
         android:layout_below="@+id/text_view_countdown"
         android:layout_centerHorizontal="true"
-        android:text="@string/start"
+        android:text="@string/button_cry"
         android:onClick="onStartButton"/>
-
-    <Button
-        android:id="@+id/button_reset"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:background="@drawable/custom_button_light"
-        android:layout_below="@+id/text_view_countdown"
-        android:layout_marginStart="11dp"
-        android:layout_toEndOf="@+id/button_start_pause"
-        android:text="@string/reset"
-        android:visibility="invisible"
-        tools:visibility="visible"
-        android:onClick="onReset"/>
 
 </RelativeLayout>

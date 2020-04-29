@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/background"
-    tools:context=".activitie.MainActivity">
+    tools:context=".activity.MainActivity">
 
 
     <Button
@@ -64,7 +64,7 @@
         android:layout_marginTop="50dp"
         android:layout_marginBottom="50dp"
         android:fontFamily="@font/amita"
-        android:text="@string/sleepingBaby"
+        android:text="@string/app_name"
         android:textColor="#ffffff"
         android:textSize="48sp"
         app:layout_constraintBottom_toTopOf="@+id/button"

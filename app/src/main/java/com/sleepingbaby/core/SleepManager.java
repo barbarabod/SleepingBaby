@@ -58,9 +58,20 @@ public class SleepManager
             }
             else
             {
-                editor.putInt("day", day + 1);
-                editor.putInt("repetition", 0);
-                int tmp = day + 1;
+                if(lastDate.compareTo(LocalDate.now()) == -1)
+                {
+                    if(lastTime.compareTo(LocalTime.NOON) < 0 && LocalTime.now().compareTo(LocalTime.NOON) > 0)
+                    {
+                        editor.putInt("day", day + 1);
+                        editor.putInt("repetition", 0);
+                    }
+                }
+                else
+                {
+                    editor.putInt("day", day + 1);
+                    editor.putInt("repetition", 0);
+                }
+
             }
         }
         editor.putString("lastCryDate", LocalDate.now().toString());
@@ -98,7 +109,16 @@ public class SleepManager
                     }
                 }
             }
-            if(day < periods.length) return periods[day + 1][0];
+            if(day < periods.length)
+            {
+                if(lastDate.compareTo(LocalDate.now()) == -1)
+                {
+                    if(lastTime.compareTo(LocalTime.NOON) < 0 && LocalTime.now().compareTo(LocalTime.NOON) > 0)
+                        return periods[day + 1][0];
+                    else return periods[day][repetition + 1];
+                }
+                return periods[day + 1][0];
+            }
             else return periods[periods.length -1][0];
         }
     }

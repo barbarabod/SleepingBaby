@@ -1,4 +1,4 @@
-package com.sleepingbaby.activitie;
+package com.sleepingbaby.activity;
 
 import android.content.ComponentName;
 import android.content.Context;
@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.ServiceConnection;
 import android.os.Bundle;
 
+import androidx.activity.OnBackPressedCallback;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.IBinder;
@@ -16,7 +17,6 @@ import android.widget.TextView;
 import com.sleepingbaby.R;
 import com.sleepingbaby.core.MainService;
 import com.sleepingbaby.core.ServiceCallbacks;
-import com.sleepingbaby.core.SleepManager;
 
 public class Active extends AppCompatActivity implements ServiceCallbacks
 {
@@ -31,6 +31,14 @@ public class Active extends AppCompatActivity implements ServiceCallbacks
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_active);
         initViews();
+    }
+
+    @Override
+    public void onBackPressed()
+    {
+        super.onBackPressed();
+        Intent intent = new Intent(this, MainActivity.class);
+        startActivity(intent);
     }
 
     void initViews()
@@ -72,6 +80,7 @@ public class Active extends AppCompatActivity implements ServiceCallbacks
             bound = true;
             myService.setCallbacks(Active.this);
             myService.initView();
+            if(!myService.isWithBaby()) updateStartButtonActivity(true);
         }
 
         @Override
