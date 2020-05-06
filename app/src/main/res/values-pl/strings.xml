@@ -12,6 +12,8 @@
     <string name="restart_progress">Resetuj postęp</string>
     <string name="set_day">Ustaw dzień</string>
     <string name="title_activity_settings">Ustawienia</string>
+    <string name="array__no_reset">Nie resetuj</string>
+    <string name="array__reset">Zresetuj wszystkie dane</string>
     <string name="information_cry">Kliknij gdy dziecko zacznie płakać</string>
     <string name="information_no_cry">Kliknij gdy dziecko przestanie płakać</string>
     <string name="information_with_baby">Spędzaj czas z dzieckiem</string>
