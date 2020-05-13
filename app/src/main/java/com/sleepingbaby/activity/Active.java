@@ -1,12 +1,12 @@
 package com.sleepingbaby.activity;
 
+import android.Manifest;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.os.Bundle;
 
-import androidx.activity.OnBackPressedCallback;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.IBinder;
@@ -54,6 +54,7 @@ public class Active extends AppCompatActivity implements ServiceCallbacks
         super.onStart();
         Intent intent = new Intent(this, MainService.class);
         bindService(intent, serviceConnection, Context.BIND_AUTO_CREATE);
+
     }
 
     protected void onStop() {
@@ -125,12 +126,20 @@ public class Active extends AppCompatActivity implements ServiceCallbacks
     public void onStartButton(View view)
     {
         myService.cryClicked();
-
     }
 
-    public void onReset(View view)
+
+    public void event(String m)
     {
-
+        msg = m;
+        runOnUiThread(action);
     }
+
+    public String msg;
+    private Runnable action = () ->
+    {
+        TextView text = findViewById(R.id.debug);
+        text.setText(msg);
+    };
 }
 

@@ -6,9 +6,17 @@ import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
+import android.media.AudioFormat;
+import android.media.AudioManager;
+import android.media.AudioRecord;
+import android.media.AudioTrack;
+import android.media.MediaRecorder;
 import android.os.Binder;
+import android.os.Build;
 import android.os.CountDownTimer;
 import android.os.IBinder;
+import android.os.Vibrator;
+import android.util.Log;
 
 import androidx.core.app.NotificationCompat;
 
@@ -16,11 +24,15 @@ import com.sleepingbaby.R;
 import com.sleepingbaby.activity.Active;
 import com.sleepingbaby.activity.MainActivity;
 
+import java.text.DecimalFormat;
+
 import static com.sleepingbaby.App.CHANNEL_ID;
 import static com.sleepingbaby.App.TIMER_CHANNEL_ID;
 
 public class MainService extends Service
 {
+    private static final String TAG = "MainService";
+
     private static String INFORMATION_CRY;
     private static String INFORMATION_NO_CRY;
     private static String INFORMATION_WITH_BABY;
@@ -28,20 +40,17 @@ public class MainService extends Service
     private static String BUTTON_NO_CRY;
 
     private ServiceCallbacks serviceCallbacks;
-
+    public class LocalBinder extends Binder { public MainService getService() { return MainService.this; }}
     private final IBinder binder = new LocalBinder();
 
-    public void setCallbacks(ServiceCallbacks callbacks)
+    @Override
+    public int onStartCommand(Intent intent, int flags, int startId)
     {
-        serviceCallbacks = callbacks;
-    }
+        setStrings();
+        pushForeground();
+        startRecorder();
 
-    public class LocalBinder extends Binder
-    {
-        public MainService getService()
-        {
-            return MainService.this;
-        }
+        return START_NOT_STICKY;
     }
 
     @Override
@@ -51,33 +60,16 @@ public class MainService extends Service
     }
 
     @Override
-    public int onStartCommand(Intent intent, int flags, int startId)
-    {
-        INFORMATION_CRY = getResources().getString(R.string.information_cry);
-        INFORMATION_NO_CRY = getResources().getString(R.string.information_no_cry);
-        INFORMATION_WITH_BABY = getResources().getString(R.string.information_with_baby);
-        BUTTON_CRY = getResources().getString(R.string.button_cry);
-        BUTTON_NO_CRY = getResources().getString(R.string.button_no_cry);
+    public void onDestroy() { stopRecorder(); }
 
-
-        Intent notificationIntent = new Intent(this, MainActivity.class);
-        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, notificationIntent, 0);
-        Notification notification = new NotificationCompat.Builder(this, CHANNEL_ID)
-                .setContentTitle(getResources().getString(R.string.foreground_info))
-                .setSmallIcon(R.drawable.ic_android)
-                .setContentIntent(pendingIntent).build();
-
-        startForeground(364, notification);
-        return START_NOT_STICKY;
-    }
 
     // ##### TIMER #####
 
     private CountDownTimer countDownTimer;
+    public Vibrator vibrator;
 
     private boolean withBaby;
     private boolean waiting;
-    private long timeLeft;
 
     /**
      * Main method to start timer
@@ -95,7 +87,6 @@ public class MainService extends Service
             @Override
             public void onTick(long millisUntilFinished)
             {
-                timeLeft = millisUntilFinished;
                 if(serviceCallbacks != null)
                     serviceCallbacks.updateTimerTime(millisUntilFinished);
             }
@@ -184,6 +175,123 @@ public class MainService extends Service
     }
 
 
+    // ##### AUDIO RECORDER #####
+
+    private AudioRecord recorder;
+    private boolean cryingDetected;
+    private CryRecognition cryRecognition = new CryRecognition(60, 10,400);
+
+    // the audio recording options
+    private static final int RECORDING_RATE = 44100;
+    private static final int CHANNEL = AudioFormat.CHANNEL_IN_MONO;
+    private static final int FORMAT = AudioFormat.ENCODING_PCM_16BIT;
+
+    // the minimum buffer size needed for audio recording
+    private static int BUFFER_SIZE = AudioRecord.getMinBufferSize(RECORDING_RATE, CHANNEL, FORMAT);
+
+    private boolean currentlySendingAudio = false;
+
+    public void startRecorder()
+    {
+        Log.i(TAG, "Starting the audio stream");
+        currentlySendingAudio = true;
+        startStreaming();
+    }
+
+    public void stopRecorder()
+    {
+        if(currentlySendingAudio)
+        {
+            Log.i(TAG, "Stopping the audio stream");
+            currentlySendingAudio = false;
+            recorder.release();
+        }
+
+
+    }
+
+    private void startStreaming()
+    {
+        Log.i(TAG, "Starting the background thread to read the audio data");
+        Thread streamThread = new Thread(() ->
+        {
+            try
+            {
+                int rate = AudioTrack.getNativeOutputSampleRate(AudioManager.STREAM_SYSTEM);
+                int bufferSize = AudioRecord.getMinBufferSize(rate, AudioFormat.CHANNEL_IN_MONO, AudioFormat.ENCODING_PCM_16BIT);
+                short[] buffer = new short[bufferSize];
+                android.os.Process.setThreadPriority(android.os.Process.THREAD_PRIORITY_AUDIO);
+
+                Log.i(TAG, "Creating the AudioRecord");
+                recorder = new AudioRecord(MediaRecorder.AudioSource.MIC, rate, AudioFormat.CHANNEL_IN_MONO, AudioFormat.ENCODING_PCM_16BIT, bufferSize);
+
+                Log.i(TAG, "AudioRecord recording...");
+                recorder.startRecording();
+
+
+                while(currentlySendingAudio)
+                {
+                    int readSize = recorder.read(buffer, 0, buffer.length);
+
+                    double maxAmplitude = 0;
+                    double db = 0;
+
+                    for(int i = 0; i < readSize; i++)
+                    {
+                        if(Math.abs(buffer[i]) > maxAmplitude)
+                            maxAmplitude = Math.abs(buffer[i]);
+                    }
+
+                    if(maxAmplitude != 0)
+                        db = 20.0 * Math.log10(maxAmplitude / 32767.0) + 90;
+
+                    cryingDetected = cryRecognition.update(maxAmplitude);
+
+                    //DEBUG
+                    DecimalFormat df2 = new DecimalFormat("#.##");
+                    Log.d(TAG, "Amplitude: " + maxAmplitude + " ; DB: " + df2.format(db) + "crying: " + cryingDetected);
+                    if (serviceCallbacks != null) serviceCallbacks.event("Amplitude: " + maxAmplitude + " ; DB: " + df2.format(db) + " \n crying: " + cryingDetected ); // TEST
+                }
+            } catch(Exception e)
+            {
+                Log.e(TAG, "Exception recording audio. " + e.getMessage());
+                e.printStackTrace();
+            }
+        });
+
+        streamThread.start();
+    }
+
+
+    // UTIL
+
+    public void setCallbacks(ServiceCallbacks callbacks)
+    {
+        serviceCallbacks = callbacks;
+    }
+    public boolean isWithBaby() { return withBaby; }
+
+    public void setStrings()
+    {
+        INFORMATION_CRY = getResources().getString(R.string.information_cry);
+        INFORMATION_NO_CRY = getResources().getString(R.string.information_no_cry);
+        INFORMATION_WITH_BABY = getResources().getString(R.string.information_with_baby);
+        BUTTON_CRY = getResources().getString(R.string.button_cry);
+        BUTTON_NO_CRY = getResources().getString(R.string.button_no_cry);
+    }
+
+    public void pushForeground()
+    {
+        Intent notificationIntent = new Intent(this, MainActivity.class);
+        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, notificationIntent, 0);
+        Notification notification = new NotificationCompat.Builder(this, CHANNEL_ID)
+                .setContentTitle(getResources().getString(R.string.foreground_info))
+                .setSmallIcon(R.drawable.ic_android)
+                .setContentIntent(pendingIntent).build();
+
+        startForeground(364, notification);
+    }
+
     public void pushNotification(boolean withChild)
     {
         String text;
@@ -197,6 +305,14 @@ public class MainService extends Service
                 .setContentTitle(text)
                 .setAutoCancel(true);
 
+        if(Build.VERSION.SDK_INT >= 26) // TODO
+        {
+
+        }
+        else
+        {
+        }
+
         PendingIntent intent = PendingIntent.getActivity(this, 0, new Intent(this, Active.class), PendingIntent.FLAG_UPDATE_CURRENT);
         builder.setContentIntent(intent);
 
@@ -204,8 +320,4 @@ public class MainService extends Service
         notificationManager.notify(13, builder.build());
     }
 
-    public boolean isWithBaby()
-    {
-        return withBaby;
-    }
 }

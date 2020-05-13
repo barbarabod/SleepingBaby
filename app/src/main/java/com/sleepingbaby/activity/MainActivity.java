@@ -1,13 +1,14 @@
 package com.sleepingbaby.activity;
 
-import androidx.activity.OnBackPressedCallback;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
+import android.Manifest;
 import android.app.ActivityManager;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 
 import com.sleepingbaby.R;
@@ -21,6 +22,7 @@ public class MainActivity extends AppCompatActivity
     {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        checkRecordPermission();
     }
 
     @Override
@@ -53,7 +55,6 @@ public class MainActivity extends AppCompatActivity
         stopService(serviceIntent);
     }
 
-
     //SERVICE
     private boolean isServiceRunning() {
         ActivityManager manager = (ActivityManager) getSystemService(ACTIVITY_SERVICE);
@@ -63,6 +64,19 @@ public class MainActivity extends AppCompatActivity
             }
         }
         return false;
+    }
+
+    // tmp, move to settings later
+    private void checkRecordPermission()
+    {
+
+        if(ActivityCompat.checkSelfPermission(this, Manifest.permission.RECORD_AUDIO)
+                != PackageManager.PERMISSION_GRANTED)
+        {
+
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.RECORD_AUDIO},
+                    123);
+        }
     }
 
 
