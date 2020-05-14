@@ -14,10 +14,15 @@ import android.media.MediaRecorder;
 import android.os.Binder;
 import android.os.Build;
 import android.os.CountDownTimer;
+import android.os.Handler;
 import android.os.IBinder;
+import android.os.Looper;
+import android.os.Message;
+import android.os.VibrationEffect;
 import android.os.Vibrator;
 import android.util.Log;
 
+import androidx.annotation.NonNull;
 import androidx.core.app.NotificationCompat;
 
 import com.sleepingbaby.R;
@@ -33,11 +38,14 @@ public class MainService extends Service
 {
     private static final String TAG = "MainService";
 
-    private static String INFORMATION_CRY;
-    private static String INFORMATION_NO_CRY;
+    private static String INFORMATION_START_CRY;
+    private static String INFORMATION_STOP_CRY;
     private static String INFORMATION_WITH_BABY;
+    private static String INFORMATION_GO_TO_BABY;
+    private static String INFORMATION_LEAVE_CHILD;
     private static String BUTTON_CRY;
     private static String BUTTON_NO_CRY;
+    private static String BUTTON_STOP_VIBRATING;
 
     private ServiceCallbacks serviceCallbacks;
     public class LocalBinder extends Binder { public MainService getService() { return MainService.this; }}
@@ -46,9 +54,12 @@ public class MainService extends Service
     @Override
     public int onStartCommand(Intent intent, int flags, int startId)
     {
+        waitingForCry = true;
+        vibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
+
         setStrings();
         pushForeground();
-        startRecorder();
+        if(voiceDetection) startRecorder();
 
         return START_NOT_STICKY;
     }
@@ -69,7 +80,24 @@ public class MainService extends Service
     public Vibrator vibrator;
 
     private boolean withBaby;
-    private boolean waiting;
+    private boolean waitingForCry;
+    private boolean vibratingAfterCry;
+    private boolean vibratingAfterWitchChild;
+    private boolean cryByUser;
+
+    private boolean voiceDetection = true; // TODO settings handle
+
+
+
+    Handler mHandler = new Handler(Looper.getMainLooper())
+    {
+        @Override
+        public void handleMessage(@NonNull Message msg)
+        {
+            if(msg.arg1 == 1) startTimer();
+            else stopTimer();
+        }
+    };
 
     /**
      * Main method to start timer
@@ -94,11 +122,12 @@ public class MainService extends Service
             @Override
             public void onFinish()
             {
+                Log.i(TAG, "Timer finished");
                 if(withBaby)
                 {
                     if(serviceCallbacks != null)
                     {
-                        serviceCallbacks.updateInfo(INFORMATION_CRY);
+                        serviceCallbacks.updateInfo(INFORMATION_START_CRY);
                         serviceCallbacks.updateStartButtonActivity(true);
                         serviceCallbacks.updateStartButtonText(BUTTON_CRY);
                     }
@@ -113,17 +142,18 @@ public class MainService extends Service
                     }
                     pushNotification(true);
                     withBaby = true;
-                    waiting = false;
                     SleepManager.updateLastCry();
-                    startTimer();
+                    //startTimer();
                 }
+                cryByUser = false;
             }
         }.start();
     }
 
     private void stopTimer()
     {
-        countDownTimer.cancel();
+        if(countDownTimer != null)
+            countDownTimer.cancel();
     }
 
     /**
@@ -133,44 +163,127 @@ public class MainService extends Service
     {
         if(serviceCallbacks != null)
         {
-            if(waiting)
+            if(waitingForCry)
             {
-                waiting = false;
-                serviceCallbacks.updateStartButtonText(BUTTON_CRY);
-                serviceCallbacks.updateInfo(INFORMATION_CRY);
-                serviceCallbacks.updateTimerTime(0);
-                stopTimer();
-            } else
-            {
-                waiting = true;
+                Log.i(TAG, "cryClicked -> waitingForCry");
+                waitingForCry = false;
+                cryByUser = true;
                 serviceCallbacks.updateStartButtonText(BUTTON_NO_CRY);
-                serviceCallbacks.updateInfo(INFORMATION_NO_CRY);
+                serviceCallbacks.updateInfo(INFORMATION_STOP_CRY);
                 startTimer();
             }
+            else if(vibratingAfterCry)
+            {
+                Log.i(TAG, "cryClicked -> vibratingAfterCry");
+                vibratingAfterCry = false;
+                vibrator.cancel();
+                serviceCallbacks.updateStartButtonText(BUTTON_STOP_VIBRATING);
+                serviceCallbacks.updateInfo(INFORMATION_WITH_BABY);
+                serviceCallbacks.updateStartButtonActivity(false);
+                startTimer();
+            }
+            else if(vibratingAfterWitchChild)
+            {
+                Log.i(TAG, "cryClicked -> vibratingAfterWitchChild");
+                vibratingAfterWitchChild = false;
+                waitingForCry = true;
+                vibrator.cancel();
+                serviceCallbacks.updateStartButtonText(BUTTON_CRY);
+                serviceCallbacks.updateInfo(INFORMATION_START_CRY);
+                serviceCallbacks.updateStartButtonActivity(true);
+                cryRecognition = new CryRecognition(60, 10,400);
+            }
+            else
+            {
+                Log.i(TAG, "cryClicked -> else");
+                waitingForCry = true;
+                serviceCallbacks.updateStartButtonText(BUTTON_CRY);
+                serviceCallbacks.updateInfo(INFORMATION_START_CRY);
+                serviceCallbacks.updateTimerTime(0);
+                cryByUser = false;
+                stopTimer();
+            }
         }
+
+
+
+
+
+//        if(serviceCallbacks != null)
+//        {
+//            if(waiting)
+//            {
+//                waiting = false;
+//                serviceCallbacks.updateStartButtonText(BUTTON_CRY);
+//                serviceCallbacks.updateInfo(INFORMATION_START_CRY);
+//                serviceCallbacks.updateTimerTime(0);
+//                stopTimer();
+//            } else
+//            {
+//                waiting = true;
+//                serviceCallbacks.updateStartButtonText(BUTTON_NO_CRY);
+//                serviceCallbacks.updateInfo(INFORMATION_STOP_CRY);
+//                startTimer();
+//            }
+//        }
     }
 
     public void initView()
     {
         if(serviceCallbacks != null)
         {
-            if(withBaby)
+            if(waitingForCry)
             {
-                serviceCallbacks.updateInfo(INFORMATION_WITH_BABY);
                 serviceCallbacks.updateStartButtonText(BUTTON_CRY);
-                serviceCallbacks.updateStartButtonActivity(false);
-            } else if(waiting)
-            {
-                serviceCallbacks.updateInfo(INFORMATION_NO_CRY);
-                serviceCallbacks.updateStartButtonText(BUTTON_NO_CRY);
+                serviceCallbacks.updateInfo(INFORMATION_START_CRY);
                 serviceCallbacks.updateStartButtonActivity(true);
-            } else
+            }
+            else if(vibratingAfterCry)
             {
-                serviceCallbacks.updateInfo(INFORMATION_CRY);
-                serviceCallbacks.updateStartButtonText(BUTTON_CRY);
+                serviceCallbacks.updateStartButtonText(BUTTON_STOP_VIBRATING);
+                serviceCallbacks.updateInfo(INFORMATION_GO_TO_BABY);
+                serviceCallbacks.updateStartButtonActivity(true);
+            }
+            else if(vibratingAfterWitchChild)
+            {
+                serviceCallbacks.updateStartButtonText(BUTTON_STOP_VIBRATING);
+                serviceCallbacks.updateInfo(INFORMATION_LEAVE_CHILD);
+                serviceCallbacks.updateStartButtonActivity(true);
+            }
+            else if(withBaby)
+            {
+                serviceCallbacks.updateStartButtonText(BUTTON_NO_CRY);
+                serviceCallbacks.updateInfo(INFORMATION_WITH_BABY);
+                serviceCallbacks.updateStartButtonActivity(false);
+            }
+            else
+            {
+                serviceCallbacks.updateStartButtonText(BUTTON_NO_CRY);
+                serviceCallbacks.updateInfo(INFORMATION_STOP_CRY);
                 serviceCallbacks.updateStartButtonActivity(true);
             }
         }
+
+
+//        if(serviceCallbacks != null)
+//        {
+//            if(withBaby)
+//            {
+//                serviceCallbacks.updateInfo(INFORMATION_WITH_BABY);
+//                serviceCallbacks.updateStartButtonText(BUTTON_CRY);
+//                serviceCallbacks.updateStartButtonActivity(false);
+//            } else if(waitingForCry)
+//            {
+//                serviceCallbacks.updateInfo(INFORMATION_STOP_CRY);
+//                serviceCallbacks.updateStartButtonText(BUTTON_NO_CRY);
+//                serviceCallbacks.updateStartButtonActivity(true);
+//            } else
+//            {
+//                serviceCallbacks.updateInfo(INFORMATION_START_CRY);
+//                serviceCallbacks.updateStartButtonText(BUTTON_CRY);
+//                serviceCallbacks.updateStartButtonActivity(true);
+//            }
+//        }
 
     }
 
@@ -179,6 +292,7 @@ public class MainService extends Service
 
     private AudioRecord recorder;
     private boolean cryingDetected;
+    private boolean previousTickCrying;
     private CryRecognition cryRecognition = new CryRecognition(60, 10,400);
 
     // the audio recording options
@@ -206,8 +320,6 @@ public class MainService extends Service
             currentlySendingAudio = false;
             recorder.release();
         }
-
-
     }
 
     private void startStreaming()
@@ -247,9 +359,43 @@ public class MainService extends Service
 
                     cryingDetected = cryRecognition.update(maxAmplitude);
 
+
+                    if(cryingDetected != previousTickCrying && !cryByUser && !vibratingAfterWitchChild && !vibratingAfterCry && !withBaby)
+                    {
+                        if(cryingDetected)
+                        {
+                            Log.i(TAG, "Trying to start timer by crying recognition");
+                            waitingForCry = false;
+                            if(serviceCallbacks != null)
+                            {
+                                serviceCallbacks.updateStartButtonTextUiThread(BUTTON_NO_CRY);/////////
+                                serviceCallbacks.updateInfoUiThread(INFORMATION_STOP_CRY);
+                            }
+                            Message message = mHandler.obtainMessage(1, 1,1);
+                            message.sendToTarget();
+                            //startTimer();
+                        }
+                        else
+                        {
+                            Log.i(TAG, "Trying to stop timer by crying recognition");
+                            waitingForCry = true;
+                            if(serviceCallbacks != null)
+                            {
+                                serviceCallbacks.updateStartButtonTextUiThread(BUTTON_CRY);////////////
+                                serviceCallbacks.updateInfoUiThread(INFORMATION_START_CRY);
+                                serviceCallbacks.updateTimerTimeUiThread(0);
+                            }
+                            Message message = mHandler.obtainMessage(2, 2, 2);
+                            message.sendToTarget();
+                            //stopTimer();
+                        }
+                    }
+
+
+                    previousTickCrying = cryingDetected;
                     //DEBUG
                     DecimalFormat df2 = new DecimalFormat("#.##");
-                    Log.d(TAG, "Amplitude: " + maxAmplitude + " ; DB: " + df2.format(db) + "crying: " + cryingDetected);
+                    Log.d(TAG, "Amplitude: " + maxAmplitude + " ; DB: " + df2.format(db) + "crying: " + cryingDetected + ", waitingForCry: " + waitingForCry + ", withBaby: " + withBaby + ", vibratingAfterCry: " + vibratingAfterCry + ", vibratingAfterWitchChild:" + vibratingAfterWitchChild);
                     if (serviceCallbacks != null) serviceCallbacks.event("Amplitude: " + maxAmplitude + " ; DB: " + df2.format(db) + " \n crying: " + cryingDetected ); // TEST
                 }
             } catch(Exception e)
@@ -273,11 +419,14 @@ public class MainService extends Service
 
     public void setStrings()
     {
-        INFORMATION_CRY = getResources().getString(R.string.information_cry);
-        INFORMATION_NO_CRY = getResources().getString(R.string.information_no_cry);
+        INFORMATION_START_CRY = getResources().getString(R.string.information_cry);
+        INFORMATION_STOP_CRY = getResources().getString(R.string.information_no_cry);
         INFORMATION_WITH_BABY = getResources().getString(R.string.information_with_baby);
+        INFORMATION_GO_TO_BABY = getResources().getString(R.string.information_go_baby);
+        INFORMATION_LEAVE_CHILD = getResources().getString(R.string.information_leave_baby);
         BUTTON_CRY = getResources().getString(R.string.button_cry);
         BUTTON_NO_CRY = getResources().getString(R.string.button_no_cry);
+        BUTTON_STOP_VIBRATING = getResources().getString(R.string.stop_vibrating);
     }
 
     public void pushForeground()
@@ -294,24 +443,31 @@ public class MainService extends Service
 
     public void pushNotification(boolean withChild)
     {
+        Log.i(TAG, "Pushing notification");
+
         String text;
         if(withChild)
+        {
             text = getResources().getString(R.string.go_child);
+            vibratingAfterCry = true;
+        }
         else
+        {
             text = getResources().getString(R.string.leave_child);
+            vibratingAfterWitchChild = true;
+        }
+
+        initView();
+
+        if(Build.VERSION.SDK_INT >= 26)
+            vibrator.vibrate(VibrationEffect.createWaveform(new long[] {0, 150, 850 ,150, 850}, 1));
+        else
+            vibrator.vibrate(new long[] {0, 500, 100 ,500}, 0);
 
         NotificationCompat.Builder builder = new NotificationCompat.Builder(this, TIMER_CHANNEL_ID)
                 .setSmallIcon(R.drawable.ic_android)
                 .setContentTitle(text)
                 .setAutoCancel(true);
-
-        if(Build.VERSION.SDK_INT >= 26) // TODO
-        {
-
-        }
-        else
-        {
-        }
 
         PendingIntent intent = PendingIntent.getActivity(this, 0, new Intent(this, Active.class), PendingIntent.FLAG_UPDATE_CURRENT);
         builder.setContentIntent(intent);

@@ -22,8 +22,12 @@
     <string name="information_with_baby">Spend time with child</string>
     <string name="button_cry">Child\nCry</string>
     <string name="button_no_cry">Child\nStopped\nCrying</string>
+    <string name="information_go_baby">Go to your baby</string>
+    <string name="stop_vibrating">Stop vibrating</string>
+    <string name="information_leave_baby">Leave baby</string>
 
     <string name="go_child">Go to child.</string>
     <string name="leave_child">Time is up! Leave child.</string>
     <string name="foreground_info">Listening in background.</string>
+
 </resources>

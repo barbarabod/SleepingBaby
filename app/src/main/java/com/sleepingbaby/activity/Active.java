@@ -1,6 +1,5 @@
 package com.sleepingbaby.activity;
 
-import android.Manifest;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
@@ -129,17 +128,31 @@ public class Active extends AppCompatActivity implements ServiceCallbacks
     }
 
 
-    public void event(String m)
+    public void updateInfoUiThread(String s)
     {
-        msg = m;
-        runOnUiThread(action);
+        runOnUiThread(() -> updateInfo(s));
     }
 
-    public String msg;
-    private Runnable action = () ->
+    public void updateStartButtonTextUiThread(String s)
     {
-        TextView text = findViewById(R.id.debug);
-        text.setText(msg);
-    };
+        runOnUiThread(() -> updateStartButtonText(s));
+    }
+
+    public void updateTimerTimeUiThread(long timeLeft)
+    {
+        runOnUiThread(() -> updateTimerTime(timeLeft));
+    }
+
+
+
+
+
+    // TODO remove debug
+    public void event(String m)
+    {
+        runOnUiThread(() -> {
+            TextView text = findViewById(R.id.debug);
+            text.setText(m); });
+    }
 }
 

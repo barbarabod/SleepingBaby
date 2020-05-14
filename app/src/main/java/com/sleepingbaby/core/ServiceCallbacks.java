@@ -9,4 +9,7 @@ public interface ServiceCallbacks
 
 
     void event(String m); // TEST
+    void updateInfoUiThread(String s);
+    void updateStartButtonTextUiThread(String s);
+    void updateTimerTimeUiThread(long timeLeft);
 }
