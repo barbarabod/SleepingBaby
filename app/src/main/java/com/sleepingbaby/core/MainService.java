@@ -6,6 +6,7 @@ import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.media.AudioFormat;
 import android.media.AudioManager;
 import android.media.AudioRecord;
@@ -26,6 +27,7 @@ import androidx.annotation.NonNull;
 import androidx.core.app.NotificationCompat;
 
 import com.sleepingbaby.R;
+import com.sleepingbaby.fragment.SettingsFragment;
 import com.sleepingbaby.activity.Active;
 import com.sleepingbaby.activity.MainActivity;
 
@@ -59,7 +61,15 @@ public class MainService extends Service
 
         setStrings();
         pushForeground();
-        if(voiceDetection) startRecorder();
+
+        SharedPreferences sharedPref =
+                android.preference.PreferenceManager
+                        .getDefaultSharedPreferences(this);
+
+        Boolean switchPref_listen = sharedPref.getBoolean
+                (SettingsFragment.KEY_PREF_LISTEN_SWITCH, false);
+
+        if(switchPref_listen) startRecorder();
 
         return START_NOT_STICKY;
     }
@@ -84,8 +94,6 @@ public class MainService extends Service
     private boolean vibratingAfterCry;
     private boolean vibratingAfterWitchChild;
     private boolean cryByUser;
-
-    private boolean voiceDetection = true; // TODO settings handle
 
 
 

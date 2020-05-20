@@ -1,6 +1,9 @@
 <PreferenceScreen xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <EditTextPreference
+    <ListPreference
+        app:defaultValue="1"
+        app:entries="@array/day_entries"
+        app:entryValues="@array/day_values"
         app:key="day"
         app:title="@string/day_title"
         app:useSimpleSummaryProvider="true" />
@@ -21,7 +24,7 @@
         />
 
     <ListPreference
-        app:defaultValue="Nie zmienione"
+        app:defaultValue="not_reset"
         app:entries="@array/reset_entries"
         app:entryValues="@array/reset_values"
         app:key="reset"
