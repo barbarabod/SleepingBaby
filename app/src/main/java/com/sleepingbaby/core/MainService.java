@@ -50,7 +50,15 @@ public class MainService extends Service
     private static String BUTTON_STOP_VIBRATING;
 
     private ServiceCallbacks serviceCallbacks;
-    public class LocalBinder extends Binder { public MainService getService() { return MainService.this; }}
+
+    public class LocalBinder extends Binder
+    {
+        public MainService getService()
+        {
+            return MainService.this;
+        }
+    }
+
     private final IBinder binder = new LocalBinder();
 
     @Override
@@ -81,7 +89,11 @@ public class MainService extends Service
     }
 
     @Override
-    public void onDestroy() { stopRecorder(); }
+    public void onDestroy()
+    {
+        stopRecorder();
+        if(vibrator != null) vibrator.cancel();
+    }
 
 
     // ##### TIMER #####
@@ -94,7 +106,6 @@ public class MainService extends Service
     private boolean vibratingAfterCry;
     private boolean vibratingAfterWitchChild;
     private boolean cryByUser;
-
 
 
     Handler mHandler = new Handler(Looper.getMainLooper())
@@ -179,8 +190,7 @@ public class MainService extends Service
                 serviceCallbacks.updateStartButtonText(BUTTON_NO_CRY);
                 serviceCallbacks.updateInfo(INFORMATION_STOP_CRY);
                 startTimer();
-            }
-            else if(vibratingAfterCry)
+            } else if(vibratingAfterCry)
             {
                 Log.i(TAG, "cryClicked -> vibratingAfterCry");
                 vibratingAfterCry = false;
@@ -189,8 +199,7 @@ public class MainService extends Service
                 serviceCallbacks.updateInfo(INFORMATION_WITH_BABY);
                 serviceCallbacks.updateStartButtonActivity(false);
                 startTimer();
-            }
-            else if(vibratingAfterWitchChild)
+            } else if(vibratingAfterWitchChild)
             {
                 Log.i(TAG, "cryClicked -> vibratingAfterWitchChild");
                 vibratingAfterWitchChild = false;
@@ -199,9 +208,8 @@ public class MainService extends Service
                 serviceCallbacks.updateStartButtonText(BUTTON_CRY);
                 serviceCallbacks.updateInfo(INFORMATION_START_CRY);
                 serviceCallbacks.updateStartButtonActivity(true);
-                cryRecognition = new CryRecognition(60, 10,400);
-            }
-            else
+                cryRecognition = new CryRecognition(60, 10, 400);
+            } else
             {
                 Log.i(TAG, "cryClicked -> else");
                 waitingForCry = true;
@@ -212,9 +220,6 @@ public class MainService extends Service
                 stopTimer();
             }
         }
-
-
-
 
 
 //        if(serviceCallbacks != null)
@@ -245,26 +250,22 @@ public class MainService extends Service
                 serviceCallbacks.updateStartButtonText(BUTTON_CRY);
                 serviceCallbacks.updateInfo(INFORMATION_START_CRY);
                 serviceCallbacks.updateStartButtonActivity(true);
-            }
-            else if(vibratingAfterCry)
+            } else if(vibratingAfterCry)
             {
                 serviceCallbacks.updateStartButtonText(BUTTON_STOP_VIBRATING);
                 serviceCallbacks.updateInfo(INFORMATION_GO_TO_BABY);
                 serviceCallbacks.updateStartButtonActivity(true);
-            }
-            else if(vibratingAfterWitchChild)
+            } else if(vibratingAfterWitchChild)
             {
                 serviceCallbacks.updateStartButtonText(BUTTON_STOP_VIBRATING);
                 serviceCallbacks.updateInfo(INFORMATION_LEAVE_CHILD);
                 serviceCallbacks.updateStartButtonActivity(true);
-            }
-            else if(withBaby)
+            } else if(withBaby)
             {
                 serviceCallbacks.updateStartButtonText(BUTTON_NO_CRY);
                 serviceCallbacks.updateInfo(INFORMATION_WITH_BABY);
                 serviceCallbacks.updateStartButtonActivity(false);
-            }
-            else
+            } else
             {
                 serviceCallbacks.updateStartButtonText(BUTTON_NO_CRY);
                 serviceCallbacks.updateInfo(INFORMATION_STOP_CRY);
@@ -301,7 +302,7 @@ public class MainService extends Service
     private AudioRecord recorder;
     private boolean cryingDetected;
     private boolean previousTickCrying;
-    private CryRecognition cryRecognition = new CryRecognition(60, 10,400);
+    private CryRecognition cryRecognition = new CryRecognition(60, 10, 400);
 
     // the audio recording options
     private static final int RECORDING_RATE = 44100;
@@ -379,11 +380,10 @@ public class MainService extends Service
                                 serviceCallbacks.updateStartButtonTextUiThread(BUTTON_NO_CRY);/////////
                                 serviceCallbacks.updateInfoUiThread(INFORMATION_STOP_CRY);
                             }
-                            Message message = mHandler.obtainMessage(1, 1,1);
+                            Message message = mHandler.obtainMessage(1, 1, 1);
                             message.sendToTarget();
                             //startTimer();
-                        }
-                        else
+                        } else
                         {
                             Log.i(TAG, "Trying to stop timer by crying recognition");
                             waitingForCry = true;
@@ -404,7 +404,8 @@ public class MainService extends Service
                     //DEBUG
                     DecimalFormat df2 = new DecimalFormat("#.##");
                     Log.d(TAG, "Amplitude: " + maxAmplitude + " ; DB: " + df2.format(db) + "crying: " + cryingDetected + ", waitingForCry: " + waitingForCry + ", withBaby: " + withBaby + ", vibratingAfterCry: " + vibratingAfterCry + ", vibratingAfterWitchChild:" + vibratingAfterWitchChild);
-                    if (serviceCallbacks != null) serviceCallbacks.event("Amplitude: " + maxAmplitude + " ; DB: " + df2.format(db) + " \n crying: " + cryingDetected ); // TEST
+                    if(serviceCallbacks != null)
+                        serviceCallbacks.event("Amplitude: " + maxAmplitude + " ; DB: " + df2.format(db) + " \n crying: " + cryingDetected); // TEST
                 }
             } catch(Exception e)
             {
@@ -423,7 +424,11 @@ public class MainService extends Service
     {
         serviceCallbacks = callbacks;
     }
-    public boolean isWithBaby() { return withBaby; }
+
+    public boolean isWithBaby()
+    {
+        return withBaby;
+    }
 
     public void setStrings()
     {
@@ -443,7 +448,7 @@ public class MainService extends Service
         PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, notificationIntent, 0);
         Notification notification = new NotificationCompat.Builder(this, CHANNEL_ID)
                 .setContentTitle(getResources().getString(R.string.foreground_info))
-                .setSmallIcon(R.drawable.ic_android)
+                .setSmallIcon(R.mipmap.ic_launcher)
                 .setContentIntent(pendingIntent).build();
 
         startForeground(364, notification);
@@ -458,8 +463,7 @@ public class MainService extends Service
         {
             text = getResources().getString(R.string.go_child);
             vibratingAfterCry = true;
-        }
-        else
+        } else
         {
             text = getResources().getString(R.string.leave_child);
             vibratingAfterWitchChild = true;
@@ -468,12 +472,12 @@ public class MainService extends Service
         initView();
 
         if(Build.VERSION.SDK_INT >= 26)
-            vibrator.vibrate(VibrationEffect.createWaveform(new long[] {0, 150, 850 ,150, 850}, 1));
+            vibrator.vibrate(VibrationEffect.createWaveform(new long[]{0, 150, 850, 150, 850}, 1));
         else
-            vibrator.vibrate(new long[] {0, 500, 100 ,500}, 0);
+            vibrator.vibrate(new long[]{0, 500, 100, 500}, 0);
 
         NotificationCompat.Builder builder = new NotificationCompat.Builder(this, TIMER_CHANNEL_ID)
-                .setSmallIcon(R.drawable.ic_android)
+                .setSmallIcon(R.mipmap.ic_launcher)
                 .setContentTitle(text)
                 .setAutoCancel(true);
 

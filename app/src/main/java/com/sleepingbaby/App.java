@@ -4,7 +4,6 @@ import android.app.Application;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 
-import com.sleepingbaby.core.SleepManager;
 
 public class App extends Application
 {
@@ -18,7 +17,6 @@ public class App extends Application
         super.onCreate();
         instance = this;
         createNotificationChannel();
-        SleepManager.reset(); // DEBUG
     }
 
     private void createNotificationChannel()

@@ -150,9 +150,9 @@ public class Active extends AppCompatActivity implements ServiceCallbacks
     // TODO remove debug
     public void event(String m)
     {
-        runOnUiThread(() -> {
-            TextView text = findViewById(R.id.debug);
-            text.setText(m); });
+//        runOnUiThread(() -> {
+//            TextView text = findViewById(R.id.debug);
+//            text.setText(m); });
     }
 }
 

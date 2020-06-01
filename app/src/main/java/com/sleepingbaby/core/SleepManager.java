@@ -10,8 +10,11 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 
 public class SleepManager {
-    private static int[][] periods = {{11200, 12200, 15200}, {22200, 24200, 27200}, {3300, 33200, 33200}};
-    private static long timeWitChild = 10200;
+    private static final int minutes = 60000;
+    private static int[][] periods = {{3 * minutes, 5  * minutes,  7 * minutes}, {5  * minutes, 7  * minutes, 9  * minutes}, {7  * minutes, 9  * minutes, 10  * minutes}, {10  * minutes, 10  * minutes, 10  * minutes}};
+    private static long timeWitChild = 2 * minutes;
+
+
 
     public static void reset()
     {
