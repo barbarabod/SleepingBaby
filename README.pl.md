@@ -1,5 +1,9 @@
+
+
 # SleepingBaby
 Aplikacja na Android pomagająca rodzicom w nauczeniu dzieci samodzielnego zasypiania.
+
+*Przeczytaj w innym języku: [Angielski](README.md)*
 
 # Cel aplikacji
 Ogólnym celem aplikacji jest pomoc rodzicom w nauczeniu małego dziecka samodzielnego zasypiania i regularnego cyklu snu. Zazwyczaj niemowlęta już w wieku 6 miesięcy są zdolne samodzielnie przesypiać całą noc. Jednakże wielu rodziców zmaga się z problemami snu u dziecka nawet przez kilka lat. Aplikacja ta jest narzędziem, które ma za zadanie pomóc rodzicom w wykształceniu u dziecka zdrowych nawyków związanych ze snem. Plan terapii prowadzony jest zgodnie z wytycznymi z książki 'Każde dziecko może nauczyć się spać' autorstwa Anette Kast-Zahn i Hartmut Morgenroth.
