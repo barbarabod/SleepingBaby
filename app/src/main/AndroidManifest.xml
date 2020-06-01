@@ -3,8 +3,13 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="com.sleepingbaby">
 
+    <!--    Permissions-->
+
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
     <uses-permission android:name="android.permission.VIBRATE" />
+    <uses-permission android:name="android.permission.RECORD_AUDIO" />
+    <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS"/>
+
 
     <application
         android:name=".App"
@@ -24,6 +29,7 @@
         </activity>
         <activity
             android:name=".activity.SettingsActivity"
+            android:theme="@style/AppTheme.ActionBar"
             android:parentActivityName=".activity.MainActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
@@ -42,5 +48,7 @@
             android:name="preloaded_fonts"
             android:resource="@array/preloaded_fonts" />
     </application>
+
+
 
 </manifest>

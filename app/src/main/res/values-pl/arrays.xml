@@ -1,9 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+
 <resources>
     <!-- Reply Preference -->
     <string-array name="time_entries">
-        <item>1 minute</item>
-        <item>2 minutes</item>
-        <item>3 minutes</item>
+        <item>1 minuta</item>
+        <item>2 minuty</item>
+        <item>3 minuty</item>
     </string-array>
 
     <string-array name="time_values">
@@ -13,8 +15,8 @@
     </string-array>
 
     <string-array name="reset_entries">
-        <item>Do not reset</item>
-        <item>Reset all data</item>
+        <item>Nie resetuj</item>
+        <item>Zresetuj wszystkie dane</item>
     </string-array>
 
     <string-array name="reset_values">
@@ -23,10 +25,10 @@
     </string-array>
 
     <string-array name="day_entries">
-        <item>Day 1</item>
-        <item>Day 2</item>
-        <item>Day 3</item>
-        <item>Day 4 or later</item>
+        <item>Dzień 1</item>
+        <item>Dzień 2</item>
+        <item>Dzień 3</item>
+        <item>Dzień 4 lub późniejszy</item>
     </string-array>
 
     <string-array name="day_values">

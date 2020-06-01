@@ -1,13 +1,11 @@
 package com.sleepingbaby.activity;
 
-import androidx.activity.OnBackPressedCallback;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 
 import android.app.ActivityManager;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 
 import com.sleepingbaby.R;
@@ -21,6 +19,9 @@ public class MainActivity extends AppCompatActivity
     {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        android.preference.PreferenceManager
+                .setDefaultValues(this, R.xml.preferences, false);
     }
 
     @Override
@@ -53,7 +54,6 @@ public class MainActivity extends AppCompatActivity
         stopService(serviceIntent);
     }
 
-
     //SERVICE
     private boolean isServiceRunning() {
         ActivityManager manager = (ActivityManager) getSystemService(ACTIVITY_SERVICE);
@@ -64,6 +64,4 @@ public class MainActivity extends AppCompatActivity
         }
         return false;
     }
-
-
 }

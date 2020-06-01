@@ -6,7 +6,6 @@ import android.content.Intent;
 import android.content.ServiceConnection;
 import android.os.Bundle;
 
-import androidx.activity.OnBackPressedCallback;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.IBinder;
@@ -54,6 +53,7 @@ public class Active extends AppCompatActivity implements ServiceCallbacks
         super.onStart();
         Intent intent = new Intent(this, MainService.class);
         bindService(intent, serviceConnection, Context.BIND_AUTO_CREATE);
+
     }
 
     protected void onStop() {
@@ -125,12 +125,34 @@ public class Active extends AppCompatActivity implements ServiceCallbacks
     public void onStartButton(View view)
     {
         myService.cryClicked();
-
     }
 
-    public void onReset(View view)
-    {
 
+    public void updateInfoUiThread(String s)
+    {
+        runOnUiThread(() -> updateInfo(s));
+    }
+
+    public void updateStartButtonTextUiThread(String s)
+    {
+        runOnUiThread(() -> updateStartButtonText(s));
+    }
+
+    public void updateTimerTimeUiThread(long timeLeft)
+    {
+        runOnUiThread(() -> updateTimerTime(timeLeft));
+    }
+
+
+
+
+
+    // TODO remove debug
+    public void event(String m)
+    {
+//        runOnUiThread(() -> {
+//            TextView text = findViewById(R.id.debug);
+//            text.setText(m); });
     }
 }
 

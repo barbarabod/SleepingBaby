@@ -4,20 +4,23 @@ import android.content.Context;
 import android.content.SharedPreferences;
 
 import com.sleepingbaby.App;
+import com.sleepingbaby.fragment.SettingsFragment;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
 
-public class SleepManager
-{
-    private static int[][] periods = {{10200, 12200, 15200}, {4200, 5200, 6200}, {4200, 7200, 12000}};
-    private static long timeWitChild = 10200;
+public class SleepManager {
+    private static final int minutes = 60000;
+    private static int[][] periods = {{3 * minutes, 5  * minutes,  7 * minutes}, {5  * minutes, 7  * minutes, 9  * minutes}, {7  * minutes, 9  * minutes, 10  * minutes}, {10  * minutes, 10  * minutes, 10  * minutes}};
+    private static long timeWitChild = 2 * minutes;
+
 
 
     public static void reset()
     {
         SharedPreferences prefs = App.getInstance().getSharedPreferences("Prefs", Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = prefs.edit();
+        editor.putInt("time", -1);
         editor.putInt("day", -1);
         editor.putInt("repetition", -1);
         editor.putString("lastCryDate", "");
@@ -123,8 +126,23 @@ public class SleepManager
         }
     }
 
+
     public static long getTimeWitChild()
     {
+        SharedPreferences prefs = App.getInstance().getSharedPreferences("Prefs", Context.MODE_PRIVATE);
+        Integer time = prefs.getInt("time", -1);
+        if(time == 1) {
+            timeWitChild = 10200;
+        }
+        else if(time == 2) {
+            timeWitChild = 15200;
+        }
+        else if(time == 3) {
+            timeWitChild = 20200;
+        }
+
         return timeWitChild;
     }
+
+
 }
