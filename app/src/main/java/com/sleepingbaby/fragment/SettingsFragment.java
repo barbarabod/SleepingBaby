@@ -70,7 +70,11 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Shared
                 sharedPref.edit().putString(SettingsFragment.KEY_PREF_RESET_LIST, "not_reset").apply();
                 sharedPref.edit().putBoolean(SettingsFragment.KEY_PREF_LISTEN_SWITCH, false).apply();
                 sharedPref.edit().putString(SettingsFragment.KEY_PREF_DAY_LIST, "1").apply();
+                SharedPreferences prefs = App.getInstance().getSharedPreferences("Prefs", Context.MODE_PRIVATE);
+                prefs.edit().putInt("day", 1).apply();
                 sharedPref.edit().putString(SettingsFragment.KEY_PREF_TIME_LIST, "1").apply();
+                SharedPreferences prefs2 = App.getInstance().getSharedPreferences("Prefs", Context.MODE_PRIVATE);
+                prefs2.edit().putInt("time", Integer.parseInt(marketPref_time)).apply();
 
                 Intent intent = new Intent(getContext(), SettingsActivity.class);
                 startActivity(intent);
