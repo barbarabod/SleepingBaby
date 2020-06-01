@@ -1,26 +1,23 @@
 # SleepingBaby
 Android app helping parents to teach a baby to fall asleep.
 
-# Cel aplikacji
-Ogólnym celem aplikacji jest pomoc rodzicom w nauczeniu małego dziecka samodzielnego zasypiania i regularnego cyklu snu. Zazwyczaj niemowlęta już w wieku 6 miesięcy są zdolne samodzielnie przesypiać całą noc. Jednakże wielu rodziców zmaga się z problemami snu u dziecka nawet przez kilka lat. Aplikacja ta jest narzędziem, które ma za zadanie pomóc rodzicom w wykształceniu u dziecka zdrowych nawyków związanych ze snem. Plan terapii prowadzony jest zgodnie z wytycznymi z książki 'Każde dziecko może nauczyć się spać' autorstwa Anette Kast-Zahn i Hartmut Morgenroth.
+# The purpose of the app
+General purpose of the app is to help parents to teach a little baby to fall asleep unassisted and to sleep regularly. Usually 6 months old babies already are able to sleep by themselves the whole night. However, a lot of parents are struggling with their child's sleep problems even for several years. This app is a tool, which aim to help parents with developing healthy sleep habits among their children. The therapy plan is carried out based on the guidelines included in the book 'Every Child Can Learn to Sleep' by Anette Kast-Zahn and Hartmut Morgenroth.
 
-# Odbiorca
-Aplikacja skierowana jest do rodziców dzieci w wieku powyżej 6 miesięcy, które wciąż mają problemy z samodzielnym zasypianiem i przesypianiem całej nocy.
+# The receiver
+The app is adressed to parents with children above 6 months old, who still have problems with falling asleep unassisted and sleeping through the whole night.
 
-# Opis działania
-Użytkownik powinien włączyć aplikację wraz z położeniem dziecka spać. Aplikacja nasłuchuje dźwięków i w przypadku rozpoznania płaczu dziecka (lub poinformowaniu o płaczu przez rodzica poprzez kliknięcie odpowiedniego przycisku) rozpoczyna odliczanie czasu. Czas ten jest zależny od daty oraz ilości dotychczasowych powtórzeń danego dnia. O zakończeniu odliczania aplikacja informuje alarmem wibracyjnym, powiadamiając w ten sposób użytkownika o konieczności podejścia do dziecka na 1-2 minuty. Następnie cały proces się powtarza.
+# Description
+A user should turn on the app along with putting a baby to sleep. The app listens for noises and after recognizing baby's cry (or after parent informing about baby crying by clicking the appropriate button) starts a time countdown. The time is dependant from a date and a number of previous repetitions during the current night. A vibrating alert informs about the end of countdown thus notifying the user of the necessity to approach the child for 1-2 minutes. Then the whole process repeats.
 
-# Lista zebranych wymagań
-## Wymagania funkcjonalne:
-1. Aplikacja powinna wywoływać alarm wibracyjny aby powiadomić użytkownika o upływie czasu
-2. Aplikacja powinna wyświetlać powiadomienie w czasie swojego działania
-3. Możliwość resetu danych aplikacji, w przypadku gdy użytkownik chciałby rozpocząć terapię od początku
-4. Aplikacja musi nasłuchiwać dźwięki z otoczenia i je analizować
-5. Aplikacja automatycznie rozpoznaje płacz dziecka
-6. Możliwość ręcznego informowania aplikacji o płaczu dziecka i wywołania odliczania
+# List of requirements
+## Functional requirements:
+1. The app should trigger the vibrating alert to notify the user of the end of countdown
+2. The application should display a notification during its operation
+3. Possibility to reset application data if the user would like to start the therapy from the beginning
+4. The app must listen for sounds and analyze them
+5. The app automatically recognizes the child's cry
+6. Possibility of manually informing the app about child's cry and starting the countdown
 
-## Wymagania pozafunkcjonalne:
-1. Interfejs użytkownika aplikacji mobilnej powinien być przejrzysty i przystępny w obsłudze
-2. W aplikacji powinien znaleźć się przejrzysty i zrozumiały opis terapii oraz działania aplikacji
-
-
+## Non-functional requirements:
+1. The user interface should be transparent and user-friendly
