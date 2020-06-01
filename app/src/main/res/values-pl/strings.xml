@@ -17,8 +17,8 @@
     <string name="information_cry">Kliknij gdy dziecko zacznie płakać</string>
     <string name="information_no_cry">Kliknij gdy dziecko przestanie płakać</string>
     <string name="information_with_baby">Spędzaj czas z dzieckiem</string>
-    <string name="button_cry">Dziecko <br /> płacze</string>
-    <string name="button_no_cry">Dziecko <br /> przestało <br /> płakać</string>
+    <string name="button_cry">Dziecko\npłacze</string>
+    <string name="button_no_cry">Dziecko\nprzestało\npłakać</string>
     <string name="go_child">Idź do dziecka.</string>
     <string name="leave_child">Czas minął! Zostaw dziecko.</string>
     <string name="foreground_info">Nasłuchiwanie w tle.</string>

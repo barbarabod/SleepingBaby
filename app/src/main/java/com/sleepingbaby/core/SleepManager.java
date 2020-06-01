@@ -12,7 +12,7 @@ import java.time.LocalTime;
 public class SleepManager {
     private static final int minutes = 60000;
     private static int[][] periods = {{3 * minutes, 5  * minutes,  7 * minutes}, {5  * minutes, 7  * minutes, 9  * minutes}, {7  * minutes, 9  * minutes, 10  * minutes}, {10  * minutes, 10  * minutes, 10  * minutes}};
-    private static long timeWitChild = 2 * minutes;
+    private static long timeWitChild = 1 * minutes;
 
 
 
@@ -132,13 +132,13 @@ public class SleepManager {
         SharedPreferences prefs = App.getInstance().getSharedPreferences("Prefs", Context.MODE_PRIVATE);
         Integer time = prefs.getInt("time", -1);
         if(time == 1) {
-            timeWitChild = 10200;
+            timeWitChild = 1 * minutes;
         }
         else if(time == 2) {
-            timeWitChild = 15200;
+            timeWitChild = 2 * minutes;
         }
         else if(time == 3) {
-            timeWitChild = 20200;
+            timeWitChild = 3 * minutes;
         }
 
         return timeWitChild;
