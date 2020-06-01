@@ -1,6 +1,8 @@
 # SleepingBaby
 Android app helping parents to teach a baby to fall asleep.
 
+*Read this in other language: [Polish](README.pl.md)*
+
 # The purpose of the app
 General purpose of the app is to help parents to teach a little baby to fall asleep unassisted and to sleep regularly. Usually 6 months old babies already are able to sleep by themselves the whole night. However, a lot of parents are struggling with their child's sleep problems even for several years. This app is a tool, which aim to help parents with developing healthy sleep habits among their children. The therapy plan is carried out based on the guidelines included in the book 'Every Child Can Learn to Sleep' by Anette Kast-Zahn and Hartmut Morgenroth.
 
