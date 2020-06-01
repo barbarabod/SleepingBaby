@@ -21,4 +21,3 @@ Użytkownik powinien włączyć aplikację wraz z położeniem dziecka spać. Ap
 
 ## Wymagania pozafunkcjonalne:
 1. Interfejs użytkownika aplikacji mobilnej powinien być przejrzysty i przystępny w obsłudze
-2. W aplikacji powinien znaleźć się przejrzysty i zrozumiały opis terapii oraz działania aplikacji
