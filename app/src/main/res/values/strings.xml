@@ -28,7 +28,7 @@
 
     <string name="go_child">Go to child.</string>
     <string name="leave_child">Time is up! Leave child.</string>
-    <string name="foreground_info">Listening in background.</string>
+    <string name="foreground_info">Working in background.</string>
 
     <string name="array__no_reset">Do not reset</string>
     <string name="array__reset">Reset all data</string>

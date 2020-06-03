@@ -21,7 +21,7 @@
     <string name="button_no_cry">Dziecko\nprzestało\npłakać</string>
     <string name="go_child">Idź do dziecka.</string>
     <string name="leave_child">Czas minął! Zostaw dziecko.</string>
-    <string name="foreground_info">Nasłuchiwanie w tle.</string>
+    <string name="foreground_info">"Działanie w tle. "</string>
     <string name="information_go_baby">Idź do dziecka</string>
     <string name="stop_vibrating">Zatrzymaj wibracje</string>
     <string name="information_leave_baby">Opuść dziecko</string>

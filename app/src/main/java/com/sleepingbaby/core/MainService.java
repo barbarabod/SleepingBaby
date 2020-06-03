@@ -93,6 +93,10 @@ public class MainService extends Service
     {
         stopRecorder();
         if(vibrator != null) vibrator.cancel();
+        if(countDownTimer != null)  countDownTimer.cancel();
+
+        NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+        notificationManager.cancel(13);
     }
 
 
@@ -193,6 +197,8 @@ public class MainService extends Service
             } else if(vibratingAfterCry)
             {
                 Log.i(TAG, "cryClicked -> vibratingAfterCry");
+                NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+                notificationManager.cancel(13);
                 vibratingAfterCry = false;
                 vibrator.cancel();
                 serviceCallbacks.updateStartButtonText(BUTTON_STOP_VIBRATING);
@@ -202,6 +208,8 @@ public class MainService extends Service
             } else if(vibratingAfterWitchChild)
             {
                 Log.i(TAG, "cryClicked -> vibratingAfterWitchChild");
+                NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+                notificationManager.cancel(13);
                 vibratingAfterWitchChild = false;
                 waitingForCry = true;
                 vibrator.cancel();
